@@ -14,6 +14,9 @@ public class Main {
         Product product2 = new Product(2, "Смартфон", 12999.50, "Смартфон з великим екраном та високою автономністю", smartphones);
         Product product3 = new Product(3, "Навушники", 2499.00, "Бездротові навушники з шумозаглушенням", accessories);
 
+        // Масив всіх товарів
+        Product[] products = {product1, product2, product3};
+
         Cart cart = new Cart();
         OrderHistory history = new OrderHistory();
 
@@ -25,30 +28,35 @@ public class Main {
             System.out.println("4 - Переглянути кошик");
             System.out.println("5 - Зробити замовлення");
             System.out.println("6 - Переглянути історію замовлень");
+            System.out.println("7 - Пошук товарів");
             System.out.println("0 - Вийти");
 
             int choice = scanner.nextInt();
+            scanner.nextLine(); // очищення буфера після nextInt()
+
             switch (choice) {
                 case 1:
-                    System.out.println(product1);
-                    System.out.println(product2);
-                    System.out.println(product3);
+                    for (Product p : products) {
+                        System.out.println(p);
+                    }
                     break;
                 case 2:
                     System.out.println("Введіть ID товару для додавання:");
                     int idAdd = scanner.nextInt();
-                    if (idAdd == 1) cart.addProduct(product1);
-                    else if (idAdd == 2) cart.addProduct(product2);
-                    else if (idAdd == 3) cart.addProduct(product3);
-                    else System.out.println("Товар не знайдено");
+                    if (idAdd >= 1 && idAdd <= products.length) {
+                        cart.addProduct(products[idAdd - 1]);
+                    } else {
+                        System.out.println("Товар не знайдено");
+                    }
                     break;
                 case 3:
                     System.out.println("Введіть ID товару для видалення:");
                     int idRemove = scanner.nextInt();
-                    if (idRemove == 1) cart.removeProduct(product1);
-                    else if (idRemove == 2) cart.removeProduct(product2);
-                    else if (idRemove == 3) cart.removeProduct(product3);
-                    else System.out.println("Товар не знайдено у кошику");
+                    if (idRemove >= 1 && idRemove <= products.length) {
+                        cart.removeProduct(products[idRemove - 1]);
+                    } else {
+                        System.out.println("Товар не знайдено у кошику");
+                    }
                     break;
                 case 4:
                     System.out.println(cart);
@@ -58,7 +66,7 @@ public class Main {
                         System.out.println("Кошик порожній!");
                     } else {
                         Order order = new Order(cart);
-                        history.addOrder(order); // збереження в історію
+                        history.addOrder(order);
                         System.out.println("Замовлення оформлено:");
                         System.out.println(order);
                         cart.clear();
@@ -66,6 +74,39 @@ public class Main {
                     break;
                 case 6:
                     System.out.println(history);
+                    break;
+                case 7:
+                    System.out.println("Оберіть варіант пошуку:");
+                    System.out.println("1 - За назвою");
+                    System.out.println("2 - За категорією");
+                    int searchChoice = scanner.nextInt();
+                    scanner.nextLine(); // очищення буфера
+
+                    if (searchChoice == 1) {
+                        System.out.println("Введіть назву товару:");
+                        String nameSearch = scanner.nextLine().toLowerCase();
+                        boolean found = false;
+                        for (Product p : products) {
+                            if (p.getName().toLowerCase().contains(nameSearch)) {
+                                System.out.println(p);
+                                found = true;
+                            }
+                        }
+                        if (!found) System.out.println("Товарів не знайдено.");
+                    } else if (searchChoice == 2) {
+                        System.out.println("Введіть назву категорії:");
+                        String categorySearch = scanner.nextLine().toLowerCase();
+                        boolean found = false;
+                        for (Product p : products) {
+                            if (p.getCategory().getName().toLowerCase().contains(categorySearch)) {
+                                System.out.println(p);
+                                found = true;
+                            }
+                        }
+                        if (!found) System.out.println("Товарів не знайдено.");
+                    } else {
+                        System.out.println("Невірний вибір.");
+                    }
                     break;
                 case 0:
                     System.out.println("Дякуємо, що використовували наш магазин!");
@@ -76,3 +117,4 @@ public class Main {
         }
     }
 }
+
